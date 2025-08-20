@@ -1,6 +1,9 @@
 import { storageService } from "./async-storage.service.js"
+import { utilService } from "./util.service.js"
 
 const TOY_KEY = 'toyDB'
+
+_createToys()
 
 export const toyService = {
     query,
@@ -35,7 +38,7 @@ function remove(toyId) {
     return storageService.remove(TOY_KEY, toyId)
 }
 
-function getEmptyToy(name = '', imgUrl = '', price = 100, labels = []) {
+function getEmptyToy(name = '', price = 100, imgUrl = '', labels = []) {
     return {
         name,
         imgUrl,
@@ -48,4 +51,24 @@ function getEmptyToy(name = '', imgUrl = '', price = 100, labels = []) {
 
 function getDefaultFilter() {
     return { txt: '', price: 0, labels: [] }
+}
+
+function _createToys() {
+    let toys = utilService.loadFromStorage(TOY_KEY)
+    if (!toys || !toys.length) {
+        toys = []
+        const txts = ['RoboRacer', 'magicBlocks', 'DinoBuddy']
+        for (let i = 0; i < 20; i++) {
+            const txt = txts[utilService.getRandomIntInclusive(0, txts.length - 1)]
+            toys.push(_createToy(txt + (i + 1), utilService.getRandomIntInclusive(1, 100)))
+        }
+        utilService.saveToStorage(TOY_KEY, toys)
+    }
+}
+
+function _createToy(txt, price) {
+    const toy = getEmptyToy(txt, price)
+    toy._id = utilService.makeId()
+    toy.createdAt = Date.now() - utilService.getRandomIntInclusive(0, 1000 * 60 * 60 * 20)
+    return toy
 }
