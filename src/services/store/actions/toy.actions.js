@@ -1,5 +1,5 @@
 import { toyService } from "../../toy.service.js"
-import { SET_IS_LOADING, SET_TOYS } from "../reducers/toy.reducer.js"
+import { SET_FILTER_BY, SET_IS_LOADING, SET_TOYS } from "../reducers/toy.reducer.js"
 import { store } from "../store.js"
 
 export function loadToys() {
@@ -16,4 +16,8 @@ export function loadToys() {
         .finally(() => {
             store.dispatch({ type: SET_IS_LOADING, isLoading: false })
         })
+}
+
+export function setFilterBy(filterBy) {
+    store.dispatch({ type: SET_FILTER_BY, filterBy })
 }

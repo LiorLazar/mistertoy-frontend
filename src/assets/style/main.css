@@ -11,6 +11,8 @@
 @import 'cmps/AppHeader.css';
 @import 'cmps/AppFooter.css';
 
+@import 'cmps/ToyFilter.css';
+
 
 .app {
     display: flex;
