@@ -9,6 +9,7 @@
 
 /* Components */
 @import 'cmps/AppHeader.css';
+@import 'cmps/AppFooter.css';
 
 
 .app {

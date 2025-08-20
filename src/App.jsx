@@ -5,6 +5,7 @@ import { BrowserRouter as Router } from "react-router-dom"
 
 import { store } from "./services/store/store.js"
 import { AppHeader } from "./cmps/AppHeader.jsx"
+import { AppFooter } from './cmps/AppFooter.jsx'
 
 
 export default function App() {
@@ -14,6 +15,7 @@ export default function App() {
         <section className="app">
           <AppHeader />
           <main className="main-layout"></main>
+          <AppFooter />
         </section>
       </Router>
     </Provider>
