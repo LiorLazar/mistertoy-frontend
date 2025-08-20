@@ -7,6 +7,7 @@ import { store } from "./services/store/store.js"
 import { AppHeader } from "./cmps/AppHeader.jsx"
 import { AppFooter } from './cmps/AppFooter.jsx'
 import { ToyIndex } from './pages/ToyIndex.jsx'
+import { ToyDetails } from './pages/ToyDetails.jsx'
 
 
 export default function App() {
@@ -17,7 +18,8 @@ export default function App() {
           <AppHeader />
           <main className="main-layout">
             <Routes>
-              <Route element={<ToyIndex />} path="/toys" />
+              <Route element={<ToyIndex />} path="/toy" />
+              <Route element={<ToyDetails />} path="/toy/:toyId" />
             </Routes>
           </main>
           <AppFooter />
