@@ -44,7 +44,7 @@ function getEmptyToy(name = '', price = 100, imgUrl = '', labels = []) {
         imgUrl,
         price,
         labels,
-        createdAt: new Date.now(),
+        createdAt: Date.now(),
         isStock: true
     }
 }
