@@ -4,6 +4,7 @@ import { ToyPreview } from "./ToyPreview.jsx";
 export function ToyList({ toys, onRemoveToy, onEditToy }) {
     return (
         <ul className="toy-list flex">
+            {!toys.length && <div>No Toys Found...</div>}
             {toys.map(toy =>
                 <li className="toy-preview flex flex-column" key={toy._id}>
                     <ToyPreview toy={toy} />
