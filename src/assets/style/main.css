@@ -16,6 +16,10 @@
 @import 'cmps/ToyPreview.css';
 
 
+/* Pages */
+@import 'pages/ToyDetails.css';
+
+
 .app {
     display: flex;
     flex-direction: column;

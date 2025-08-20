@@ -9,7 +9,7 @@ export function AppHeader() {
                 <nav className="app-nav flex">
                     <NavLink to="/">Home</NavLink>
                     <NavLink to="/about">About</NavLink>
-                    <NavLink to="/toys">Toys</NavLink>
+                    <NavLink to="/toy">Toys</NavLink>
                 </nav>
             </section>
         </header>

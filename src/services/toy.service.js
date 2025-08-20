@@ -67,7 +67,27 @@ function _createToys() {
 }
 
 function _createToy(txt, price) {
-    const toy = getEmptyToy(txt, price)
+    let imgUrl = ''
+    if (txt.toLowerCase().includes('robo')) {
+        imgUrl = 'https://cdn-icons-png.flaticon.com/512/616/616408.png'
+    } else if (txt.toLowerCase().includes('magic')) {
+        imgUrl = 'https://cdn-icons-png.flaticon.com/512/616/616430.png'
+    } else if (txt.toLowerCase().includes('dino')) {
+        imgUrl = 'https://cdn-icons-png.flaticon.com/512/616/616408.png'
+    } else {
+        imgUrl = 'https://cdn-icons-png.flaticon.com/512/616/616408.png'
+    }
+
+    // Add random labels
+    const possibleLabels = ['On wheels', 'Box game', 'Art', 'Baby', 'Doll', 'Puzzle', 'Outdoor', 'Battery Powered']
+    const labelCount = utilService.getRandomIntInclusive(1, 3)
+    const labels = []
+    while (labels.length < labelCount) {
+        const label = possibleLabels[utilService.getRandomIntInclusive(0, possibleLabels.length - 1)]
+        if (!labels.includes(label)) labels.push(label)
+    }
+
+    const toy = getEmptyToy(txt, price, imgUrl, labels)
     toy._id = utilService.makeId()
     toy.createdAt = Date.now() - utilService.getRandomIntInclusive(0, 1000 * 60 * 60 * 20)
     return toy

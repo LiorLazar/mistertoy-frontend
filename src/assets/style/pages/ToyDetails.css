@@ -1,0 +1,14 @@
+.toy-details h1 {
+    color: var(--clr1);
+    font-size: 2em;
+}
+
+.toy-details img {
+    max-width: 200px;
+    display: block;
+    margin: auto;
+}
+
+.toy-details p {
+    color: var(--clr2);
+}
