@@ -19,7 +19,15 @@ function query(filterBy = {}) {
         .then(toys => {
             if (filterBy.txt) {
                 const regExp = new RegExp(filterBy.txt, 'i')
-                toys = toys.filter(toy => regExp.test(toy.txt))
+                toys = toys.filter(toy => regExp.test(toy.name))
+            }
+            if (filterBy.isStock === "true") {
+                toys = toys.filter(toy => toy.isStock)
+            } else if (filterBy.isStock === "false") {
+                toys = toys.filter(toy => !toy.isStock)
+            }
+            if (filterBy.labels && Array.isArray(filterBy.labels) && filterBy.labels.length) {
+                toys = toys.filter(toy => filterBy.labels.every(label => toy.labels.includes(label)))
             }
             return toys
         })

@@ -10,6 +10,9 @@ export function ToyIndex() {
     const filterBy = useSelector(storeState => storeState.toyModule.filterBy)
     const isLoading = useSelector(storeState => storeState.toyModule.isLoading)
 
+    const allLabels = Array.from(new Set(toys.flatMap(toy => toy.labels)));
+    const labelOptions = allLabels.map(label => ({ value: label, label }));
+
     useEffect(() => {
         loadToys()
             .catch(err => {
@@ -25,7 +28,7 @@ export function ToyIndex() {
         <div>
             <h3>Toys App</h3>
             <main>
-                <ToyFilter filterBy={filterBy} onSetFilter={onSetFilter} />
+                <ToyFilter filterBy={filterBy} onSetFilter={onSetFilter} labels={labelOptions} />
                 {!isLoading ? <ToyList toys={toys} /> : <div>Loading...</div>}
             </main>
         </div>
