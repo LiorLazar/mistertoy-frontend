@@ -29,6 +29,16 @@ function query(filterBy = {}) {
             if (filterBy.labels && Array.isArray(filterBy.labels) && filterBy.labels.length) {
                 toys = toys.filter(toy => filterBy.labels.every(label => toy.labels.includes(label)))
             }
+            if (filterBy.sortBy && filterBy.sortBy.sortField) {
+                const { sortField, sortDir } = filterBy.sortBy
+                const dir = sortDir || 1
+                toys.sort((t1, t2) => {
+                    if (sortField === 'name') return t1.name.localeCompare(t2.name) * dir
+                    if (sortField === 'price') return (t1.price - t2.price) * dir
+                    if (sortField === 'createdAt') return (t1.createdAt - t2.createdAt) * dir
+                    return 0
+                })
+            }
             return toys
         })
 }
@@ -58,7 +68,7 @@ function getEmptyToy(name = '', price = 100, imgUrl = '', labels = []) {
 }
 
 function getDefaultFilter() {
-    return { txt: '', price: 0, labels: [] }
+    return { txt: '', price: 0, labels: [], sortBy: { sortField: '', sortDir: '' } }
 }
 
 function _createToys() {
