@@ -13,7 +13,6 @@ export function ToyFilter({ filterBy, onSetFilter, labels }) {
 
 
     function handleChange(event) {
-        // Native event
         if (event && event.target) {
             const field = event.target.name
             let value = event.target.value
@@ -29,14 +28,38 @@ export function ToyFilter({ filterBy, onSetFilter, labels }) {
                 default:
                     break
             }
-            setFilterByToEdit(prevFilter => ({ ...prevFilter, [field]: value }))
+
+            if (field === 'sortBy' && value) {
+                const sortObject = JSON.parse(value)
+                setFilterByToEdit(prevFilter => ({
+                    ...prevFilter,
+                    sortBy: {
+                        sortField: sortObject.sortField,
+                        sortDir: sortObject.sortDir
+                    }
+                }))
+            } else if (field === 'sortBy' && !value) {
+                setFilterByToEdit(prevFilter => ({
+                    ...prevFilter,
+                    sortBy: null
+                }))
+            } else {
+                setFilterByToEdit(prevFilter => ({ ...prevFilter, [field]: value }))
+            }
         } else {
-            // react-select event
-            // event is array of selected options or null
             const value = event ? event.map(opt => opt.value) : []
             setFilterByToEdit(prevFilter => ({ ...prevFilter, labels: value }))
         }
     }
+
+    const sortOptions = [
+        { sortField: 'name', sortDir: 1, label: 'Name (A-Z)' },
+        { sortField: 'name', sortDir: -1, label: 'Name (Z-A)' },
+        { sortField: 'price', sortDir: 1, label: 'Price (Low-High)' },
+        { sortField: 'price', sortDir: -1, label: 'Price (High-Low)' },
+        { sortField: 'createdAt', sortDir: 1, label: 'Date (Oldest)' },
+        { sortField: 'createdAt', sortDir: -1, label: 'Date (Newest)' }
+    ]
 
     const { txt, isStock } = filterByToEdit
     return (
@@ -67,6 +90,22 @@ export function ToyFilter({ filterBy, onSetFilter, labels }) {
                     classNamePrefix="select"
                     onChange={handleChange}
                 ></Select>
+
+                <label htmlFor="sortBy">Sort By:</label>
+                <select
+                    className="sortBy"
+                    name="sortBy"
+                    id="sortBy"
+                    value={filterByToEdit.sortBy ? JSON.stringify(filterByToEdit.sortBy) : ''}
+                    onChange={handleChange}
+                >
+                    <option value="">Select Sort Option</option>
+                    {sortOptions.map((option, index) => (
+                        <option key={index} value={JSON.stringify({ sortField: option.sortField, sortDir: option.sortDir })}>
+                            {option.label}
+                        </option>
+                    ))}
+                </select>
             </form>
         </section >
     )
