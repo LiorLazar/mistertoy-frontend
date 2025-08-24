@@ -1,17 +1,17 @@
-import { useEffect } from "react";
+import { useEffect } from "react"
 import { useSelector } from "react-redux"
-import { loadToys, setFilterBy } from "../services/store/actions/toy.actions.js";
-import { showErrorMsg } from "../services/event-bus.service.js";
-import { ToyFilter } from "../cmps/ToyFilter.jsx";
-import { ToyList } from "../cmps/ToyList.jsx";
+import { loadToys, setFilterBy } from "../services/store/actions/toy.actions.js"
+import { showErrorMsg } from "../services/event-bus.service.js"
+import { ToyFilter } from "../cmps/ToyFilter.jsx"
+import { ToyList } from "../cmps/ToyList.jsx"
 
 export function ToyIndex() {
     const toys = useSelector(storeState => storeState.toyModule.toys)
     const filterBy = useSelector(storeState => storeState.toyModule.filterBy)
     const isLoading = useSelector(storeState => storeState.toyModule.isLoading)
 
-    const allLabels = Array.from(new Set(toys.flatMap(toy => toy.labels)));
-    const labelOptions = allLabels.map(label => ({ value: label, label }));
+    const allLabels = Array.from(new Set(toys.flatMap(toy => toy.labels)))
+    const labelOptions = allLabels.map(label => ({ value: label, label }))
 
     useEffect(() => {
         loadToys()

@@ -18,18 +18,3 @@
 
 /* Pages */
 @import 'pages/ToyDetails.css';
-
-
-.app {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-}
-
-.app>* {
-    width: 100%;
-}
-
-main {
-    flex-grow: 1;
-}
