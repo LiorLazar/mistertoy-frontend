@@ -3,6 +3,17 @@ import { utilService } from "./util.service.js"
 
 const TOY_KEY = 'toyDB'
 
+const labels = [
+    'On wheels',
+    'Box game',
+    'Art',
+    'Baby',
+    'Doll',
+    'Puzzle',
+    'Outdoor',
+    'Battery Powered',
+]
+
 _createToys()
 
 export const toyService = {
@@ -11,35 +22,46 @@ export const toyService = {
     save,
     remove,
     getEmptyToy,
-    getDefaultFilter
+    getDefaultFilter,
+    getDefaultSort,
+    getToyLabels,
+    getToyLabelsCount,
+    getInStockValue
 }
 
-function query(filterBy = {}) {
+function query(filterBy = {}, sortBy = {}) {
     return storageService.query(TOY_KEY)
         .then(toys => {
+            let toysToShow = toys
+
+            //* Filter By text
             if (filterBy.txt) {
                 const regExp = new RegExp(filterBy.txt, 'i')
-                toys = toys.filter(toy => regExp.test(toy.name))
+                toysToShow = toys.filter(toy => regExp.test(toy.name))
             }
-            if (filterBy.isStock === "true") {
-                toys = toys.filter(toy => toy.isStock)
-            } else if (filterBy.isStock === "false") {
-                toys = toys.filter(toy => !toy.isStock)
+
+            //* Filter By Instock
+            if (typeof filterBy.isStock === "bollean") {
+                toysToShow = toys.filter(toy => toy.inStock === filterBy.isStock)
             }
-            if (filterBy.labels && Array.isArray(filterBy.labels) && filterBy.labels.length) {
-                toys = toys.filter(toy => filterBy.labels.every(label => toy.labels.includes(label)))
+
+            //* Filter By Labels
+            if (ffilterBy.labels?.length) {
+                toysToShow = toysToShow.filter(toy =>
+                    filterBy.labels.every(label => toy.labels.includes(label))
+                )
             }
-            if (filterBy.sortBy && filterBy.sortBy.sortField) {
-                const { sortField, sortDir } = filterBy.sortBy
-                const dir = sortDir || 1
-                toys.sort((t1, t2) => {
-                    if (sortField === 'name') return t1.name.localeCompare(t2.name) * dir
-                    if (sortField === 'price') return (t1.price - t2.price) * dir
-                    if (sortField === 'createdAt') return (t1.createdAt - t2.createdAt) * dir
-                    return 0
+
+            //* Sort
+            if (sortBy.type) {
+                const dir = sortBy.desc
+                toysToShow.sort((a, b) => {
+                    if (sortBy.type === 'name') return a.name.localCompare(b.name) * dir
+                    else if (sortBy.type === 'price' || sortBy.type === 'createdAt') return (a[sortBy.type] - b[sortBy.type]) * dir
                 })
             }
-            return toys
+
+            return toysToShow
         })
 }
 
@@ -49,6 +71,10 @@ function getById(toyId) {
 
 function save(toy) {
     const method = bug._id ? 'put' : 'post'
+    if (method === 'post') {
+        toy.createdAt = Date.now()
+        toy.inStock = true
+    }
     return storageService[method](TOY_KEY, toy)
 }
 
@@ -56,57 +82,198 @@ function remove(toyId) {
     return storageService.remove(TOY_KEY, toyId)
 }
 
-function getEmptyToy(name = '', price = 100, imgUrl = '', labels = []) {
+function getEmptyToy() {
     return {
-        name,
-        imgUrl,
-        price,
-        labels,
-        createdAt: Date.now(),
-        isStock: true
+        name: '',
+        price: '',
+        labels: _getRandomLabels(),
+        inStock: true
     }
 }
 
 function getDefaultFilter() {
-    return { txt: '', price: 0, labels: [], sortBy: { sortField: '', sortDir: '' } }
+    return {
+        txt: '',
+        inStock: '',
+        labels: [],
+        pageIdx: 0
+    }
+}
+
+function getDefaultSort() {
+    return { type: '', desc: 1 }
+}
+
+function getToyLabels() {
+    return Promise.resolve(labels)
+}
+
+function getToyLabelsCount() {
+    const labelsCopy = [...labels]
+    const randomLabels = []
+    for (let i = 0; i < 2; i++) {
+        const idx = Math.floor(Math.random() * labelsCopy.length)
+        randomLabels.push(labelsCopy.splice(idx, 1)[0])
+    }
+    return randomLabels
+}
+
+function getInStockValue(inStock) {
+    if (inStock === '') return ''
+    if (inStock === 'true') return true
+    if (inStock === 'false') return false
 }
 
 function _createToys() {
-    let toys = utilService.loadFromStorage(TOY_KEY)
+    let toys = utilService.loadFromStorage(TOY_DB)
     if (!toys || !toys.length) {
-        toys = []
-        const txts = ['RoboRacer', 'magicBlocks', 'DinoBuddy']
-        for (let i = 0; i < 20; i++) {
-            const txt = txts[utilService.getRandomIntInclusive(0, txts.length - 1)]
-            toys.push(_createToy(txt + (i + 1), utilService.getRandomIntInclusive(1, 100)))
-        }
-        utilService.saveToStorage(TOY_KEY, toys)
-    }
-}
+        toys = [
+            {
+                "name": "Hanayama Puzzle",
+                "price": 70,
+                "labels": ["Puzzle", "Box game"],
+                "_id": "FHeoH",
+                "createdAt": 1721307706470,
+                "inStock": false
+            },
+            {
+                "name": "Truck",
+                "price": 90,
+                "labels": ["On wheels", "Outdoor"],
+                "_id": "r19SU",
+                "createdAt": 1720676977009,
+                "inStock": false
+            },
+            {
+                "name": "Talking Doll",
+                "price": 130,
+                "labels": ["Doll", "Battery Powered", "Baby"],
+                "_id": "t101",
+                "createdAt": 1631031801011,
+                "inStock": true
+            },
+            {
+                "name": "Wooden Puzzle Set",
+                "price": 55,
+                "labels": ["Puzzle", "Baby"],
+                "_id": "t102",
+                "createdAt": 1631032801011,
+                "inStock": true
+            },
+            {
+                "name": "Remote Control Car",
+                "price": 160,
+                "labels": ["On wheels", "Battery Powered", "Outdoor"],
+                "_id": "t103",
+                "createdAt": 1631033801011,
+                "inStock": true
+            },
+            {
+                "name": "Colorful Building Blocks",
+                "price": 60,
+                "labels": ["Box game", "Baby"],
+                "_id": "t104",
+                "createdAt": 1631034801011,
+                "inStock": true
+            },
+            {
+                "name": "Artistic Paint Set",
+                "price": 45,
+                "labels": ["Art", "Box game"],
+                "_id": "t105",
+                "createdAt": 1631035801011,
+                "inStock": false
+            },
+            {
+                "name": "Dancing Robot",
+                "price": 110,
+                "labels": ["Battery Powered", "Outdoor"],
+                "_id": "t106",
+                "createdAt": 1631036801011,
+                "inStock": true
+            },
+            {
+                "name": "Miniature Train Set",
+                "price": 150,
+                "labels": ["On wheels", "Box game", "Battery Powered"],
+                "_id": "t107",
+                "createdAt": 1631037801011,
+                "inStock": false
+            },
+            {
+                "name": "Soft Plush Teddy Bear",
+                "price": 40,
+                "labels": ["Baby", "Doll"],
+                "_id": "t108",
+                "createdAt": 1631038801011,
+                "inStock": true
+            },
+            {
+                "name": "3D Jigsaw Puzzle",
+                "price": 65,
+                "labels": ["Puzzle", "Art"],
+                "_id": "t109",
+                "createdAt": 1631039801011,
+                "inStock": false
+            },
+            {
+                "name": "Remote Control Helicopter",
+                "price": 180,
+                "labels": ["Battery Powered", "Outdoor"],
+                "_id": "t110",
+                "createdAt": 1631040801011,
+                "inStock": false
+            },
+            {
+                "name": "Educational Alphabet Blocks",
+                "price": 50,
+                "labels": ["Box game", "Baby"],
+                "_id": "t111",
+                "createdAt": 1631041801011,
+                "inStock": false
+            },
+            {
+                "name": "Canvas Painting Kit",
+                "price": 70,
+                "labels": ["Art", "Box game"],
+                "_id": "t112",
+                "createdAt": 1631042801011,
+                "inStock": true
+            },
+            {
+                "name": "Wooden Play Kitchen",
+                "price": 220,
+                "labels": ["Baby", "Box game"],
+                "_id": "t113",
+                "createdAt": 1631043801011,
+                "inStock": true
+            },
+            {
+                "name": "Racing Car Set",
+                "price": 140,
+                "labels": ["On wheels", "Battery Powered"],
+                "_id": "t114",
+                "createdAt": 1631044801011,
+                "inStock": false
+            },
+            {
+                "name": "Glow-in-the-Dark Stars",
+                "price": 25,
+                "labels": ["Art", "Box game"],
+                "_id": "t115",
+                "createdAt": 1631045801011,
+                "inStock": true
+            },
+            {
+                "name": "Outdoor Playhouse",
+                "price": 450,
+                "labels": ["Outdoor", "Baby"],
+                "_id": "t117",
+                "createdAt": 1631047801011,
+                "inStock": true
+            }
+        ]
 
-function _createToy(txt, price) {
-    let imgUrl = ''
-    if (txt.toLowerCase().includes('robo')) {
-        imgUrl = 'https://cdn-icons-png.flaticon.com/512/616/616408.png'
-    } else if (txt.toLowerCase().includes('magic')) {
-        imgUrl = 'https://cdn-icons-png.flaticon.com/512/616/616430.png'
-    } else if (txt.toLowerCase().includes('dino')) {
-        imgUrl = 'https://cdn-icons-png.flaticon.com/512/616/616408.png'
-    } else {
-        imgUrl = 'https://cdn-icons-png.flaticon.com/512/616/616408.png'
+        utilService.saveToStorage(TOY_DB, toys)
     }
-
-    // Add random labels
-    const possibleLabels = ['On wheels', 'Box game', 'Art', 'Baby', 'Doll', 'Puzzle', 'Outdoor', 'Battery Powered']
-    const labelCount = utilService.getRandomIntInclusive(1, 3)
-    const labels = []
-    while (labels.length < labelCount) {
-        const label = possibleLabels[utilService.getRandomIntInclusive(0, possibleLabels.length - 1)]
-        if (!labels.includes(label)) labels.push(label)
-    }
-
-    const toy = getEmptyToy(txt, price, imgUrl, labels)
-    toy._id = utilService.makeId()
-    toy.createdAt = Date.now() - utilService.getRandomIntInclusive(0, 1000 * 60 * 60 * 20)
-    return toy
 }
