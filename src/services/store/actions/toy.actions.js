@@ -1,5 +1,5 @@
 import { toyService } from "../../toy.service"
-import { REMOVE_TOY, SET_IS_LOADING, SET_TOYS } from "../reducers/toy.reducer"
+import { ADD_TOY, REMOVE_TOY, SET_FILTER_BY, SET_IS_LOADING, SET_SORT_BY, SET_TOY_LABELS, SET_TOYS } from "../reducers/toy.reducer"
 import { store } from "../store"
 
 export function loadToys() {
@@ -29,4 +29,34 @@ export function removeToy(toyId) {
             console.log('toy action -> Cannot remove toy', err)
             throw err
         })
+}
+
+export function saveToy(toy) {
+    const type = toy._id ? UPDATE_TOY : ADD_TOY
+    return toyService.save(toy)
+        .then(toyToSave => {
+            store.dispatch({ type, toy: toyToSave })
+            return toyToSave
+        })
+        .catch(err => {
+            console.log('toy action -> Cannot save toy', err)
+            throw err
+        })
+}
+
+export function loadToyLabels() {
+    return toyService.getToyLabels()
+        .then(labels => store.dispatch({ type: SET_TOY_LABELS, labels }))
+        .catch(err => {
+            console.log('toy action -> Cannot get labels')
+            throw err
+        })
+}
+
+export function setFilter(filterBy = toyService.getDefaultFilter()) {
+    store.dispatch({ type: SET_FILTER_BY, filterBy: filterBy })
+}
+
+export function setSort(sortBy = toyService.getDefaultSort()) {
+    store.dispatch({ type: SET_SORT_BY, sortBy: sortBy })
 }
