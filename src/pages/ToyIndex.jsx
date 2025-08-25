@@ -1,6 +1,6 @@
 import { useEffect } from "react"
 import { useSelector } from "react-redux"
-import { loadToys, setFilterBy } from "../services/store/actions/toy.actions"
+import { loadToys, removeToy, setFilter, setSort } from "../services/store/actions/toy.actions"
 import { showErrorMsg, showSuccessMsg } from "../services/event-bus.service"
 import { ToyFilter } from "../cmps/ToyFilter"
 import { ToyList } from "../cmps/ToyList"
@@ -31,7 +31,7 @@ export function ToyIndex() {
     }
 
     function onSetFilter(filterBy) {
-        setFilterBy(filterBy)
+        setFilter(filterBy)
     }
 
     function onSetSort(sortBy) {
