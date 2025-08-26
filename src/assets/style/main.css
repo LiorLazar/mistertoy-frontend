@@ -12,6 +12,9 @@
 @import 'cmps/AppFooter.css';
 @import 'cmps/Loader.css';
 
+@import 'cmps/PopUp.css';
+@import 'cmps/Chat.css';
+
 @import 'cmps/ToyFilter.css';
 @import 'cmps/ToyList.css';
 @import 'cmps/ToyPreview.css';
