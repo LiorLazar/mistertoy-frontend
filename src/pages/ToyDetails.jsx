@@ -1,33 +1,64 @@
 import { useEffect, useState } from "react"
-import { useParams } from "react-router-dom"
-import { toyService } from "../services/toy.service.js"
+import { Link, useNavigate, useParams } from "react-router-dom"
+import { toyService } from "../services/toy.service"
+import { showErrorMsg } from "../services/event-bus.service"
+import { Loader } from "../cmps/Loader"
+import { PopUp } from "../cmps/PopUp"
+import { Chat } from "../cmps/Chat"
 
 export function ToyDetails() {
     const [toy, setToy] = useState(null)
+    const [isChatOpen, setIsChatOpen] = useState(false)
     const { toyId } = useParams()
+    const navigate = useNavigate()
 
     useEffect(() => {
-        if (toyId) loadToy()
+        loadToy()
     }, [toyId])
 
     function loadToy() {
         toyService.getById(toyId)
             .then(toy => setToy(toy))
             .catch(err => {
-                console.log('Had issue in toy details', err)
-                // navigate('/toy')
+                console.log('Had issues in toy details', err)
+                showErrorMsg('Cannot load toy')
+                navigate('/toy')
             })
     }
-    if (!toy) return <div>Loading...</div>
-    const createdAtStr = new Date(toy.createdAt).toDateString()
+
+    if (!toy) return <Loader />
+    const formattedDate = new Date(toy.createdAt).toLocaleString('he')
     return (
-        <section className="toy-details flex flex-column align-center">
-            <h1>Toy Name: {toy.name}</h1>
-            <img src={toy.imgUrl} alt='logo' />
-            <p>Price: {toy.price}</p>
-            <p>labels: {toy.labels.join(', ')}</p>
-            <p>Created At: <span>{createdAtStr}</span></p>
-            <p>Stock Satus: <span style={{ color: toy.isStock ? 'green' : 'red' }}>{toy.isStock ? 'In Stock' : 'No In Stock'}</span></p>
+        <section className="toy-details" style={{ textAlign: 'center' }}>
+            <h1>
+                Toy name: <span>{toy.name}</span>
+            </h1>
+            <h1>
+                Toy price: <span>${toy.price}</span>
+            </h1>
+            <h1>
+                Labels: <span>{toy.labels.join(' ,')}</span>
+            </h1>
+            <h1>
+                Created At: <span>{formattedDate}</span>
+            </h1>
+            <h1 className={toy.inStock ? 'green' : 'red'}>
+                {toy.inStock ? 'In stock' : 'Not in stock'}
+            </h1>
+            <button className='back-btn'>
+                <Link to="/toy">Back</Link>
+            </button>
+            <section>
+                <PopUp
+                    header={<h3>Chat About {toy.name}s</h3>}
+                    footer={<h4>&copy; 2025-9999 Toys INC.</h4>}
+                    onClose={() => setIsChatOpen(false)}
+                    isOpen={isChatOpen}
+                >
+                    <Chat />
+                </PopUp>
+            </section >
+            {!isChatOpen && <button onClick={() => setIsChatOpen(true)} className='open-chat'>Chat</button>}
         </section >
     )
 }
