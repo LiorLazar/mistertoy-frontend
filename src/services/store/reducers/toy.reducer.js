@@ -1,7 +1,7 @@
 import { toyService } from "../../toy.service.js"
 
 export const SET_TOYS = 'SET_TOYS'
-export const REMOVE_TOY = 'REMOVE_TYO'
+export const REMOVE_TOY = 'REMOVE_TOY'
 export const ADD_TOY = 'ADD_TOY'
 export const SET_TOY_LABELS = 'SET_TOY_LABELS'
 export const UPDATE_TOY = 'UPDATE_TOY'
