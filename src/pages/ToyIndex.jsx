@@ -7,6 +7,7 @@ import { ToyList } from "../cmps/ToyList"
 import { Link } from "react-router-dom"
 import { ToySort } from "../cmps/ToySort"
 import { Loader } from "../cmps/Loader"
+import { PopUp } from "../cmps/PopUp"
 
 export function ToyIndex() {
     const toys = useSelector(storeState => storeState.toyModule.toys)
@@ -59,12 +60,12 @@ export function ToyIndex() {
 
             {isLoading && <Loader />}
             {!isLoading && <ToyList toys={toys} onRemoveToy={onRemoveToy} />}
-            {/* <PopUp isOpen={filterBy.txt === 'xxx'}>
-                    <>
-                        <h1>Hello!</h1>
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita cupiditate facilis quibusdam consectetur eius quis, suscipit veniam quam. Impedit veritatis eius ea sunt excepturi quia eveniet dolorum, culpa placeat natus.</p>
-                    </>
-                </PopUp> */}
+            <PopUp isOpen={filterBy.txt === 'xxx'}>
+                <>
+                    <h1>Hello!</h1>
+                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita cupiditate facilis quibusdam consectetur eius quis, suscipit veniam quam. Impedit veritatis eius ea sunt excepturi quia eveniet dolorum, culpa placeat natus.</p>
+                </>
+            </PopUp>
         </section>
     )
 }
