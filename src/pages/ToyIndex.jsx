@@ -5,6 +5,7 @@ import { showErrorMsg, showSuccessMsg } from "../services/event-bus.service"
 import { ToyFilter } from "../cmps/ToyFilter"
 import { ToyList } from "../cmps/ToyList"
 import { Link } from "react-router-dom"
+import { ToySort } from "../cmps/ToySort"
 
 export function ToyIndex() {
     const toys = useSelector(storeState => storeState.toyModule.toys)
@@ -47,22 +48,22 @@ export function ToyIndex() {
                     toylabels={toyLabels}
                 />
                 <ToySort sortBy={sortBy} onSetSort={onSetSort} />
+            </section>
 
-                <div style={{ marginBlockStart: '0.5em', textAlign: 'center' }}>
-                    <button style={{ marginInline: 0 }}>
-                        <Link to="/toy/edit"></Link>
-                    </button>
-                </div>
+            <div style={{ marginBlockStart: '0.5em', textAlign: 'center' }}>
+                <button style={{ marginInline: 0 }}>
+                    <Link to="/toy/edit">Add Toy</Link>
+                </button>
+            </div>
 
-                {isLoading && <Loader />}
-                {!isLoading && <ToyList toys={toys} onRemoveToy={onRemoveToy} />}
-                <PopUp isOpen={filterBy.txt === 'xxx'}>
+            {/* {isLoading && <Loader />} */}
+            {!isLoading && <ToyList toys={toys} onRemoveToy={onRemoveToy} />}
+            {/* <PopUp isOpen={filterBy.txt === 'xxx'}>
                     <>
                         <h1>Hello!</h1>
                         <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita cupiditate facilis quibusdam consectetur eius quis, suscipit veniam quam. Impedit veritatis eius ea sunt excepturi quia eveniet dolorum, culpa placeat natus.</p>
                     </>
-                </PopUp>
-            </section>
+                </PopUp> */}
         </section>
     )
 }
