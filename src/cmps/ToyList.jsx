@@ -1,19 +1,26 @@
-import { Link } from "react-router-dom";
-import { ToyPreview } from "./ToyPreview.jsx";
+import { Link } from "react-router-dom"
+import { ToyPreview } from "./ToyPreview"
 
-export function ToyList({ toys, onRemoveToy, onEditToy }) {
+export function ToyList({ toys, onRemoveToy }) {
+    const elLis = toys.map(toy => (
+        <li key={toy._id}>
+            <ToyPreview toy={toy} />
+            <div className="flex justify-center">
+                <button>
+                    <Link to={`/toy/edit/${toy._id}`}>Edit</Link>
+                </button>
+                <button>
+                    <Link to={`/toy/${toy._id}`}>Details</Link>
+                </button>
+                <button onClick={() => onRemoveToy(toy._id)}>Remove</button>
+            </div>
+        </li>
+    ))
     return (
-        <ul className="toy-list flex">
-            {!toys.length && <div>No Toys Found...</div>}
-            {toys.map(toy =>
-                <li className="toy-preview flex flex-column" key={toy._id}>
-                    <ToyPreview toy={toy} />
-                    <div>
-                        <button onClick={() => onRemoveToy(toy._id)}>Remove</button>
-                        <button onClick={() => onEditToy(toy)}>Edit</button>
-                        <button><Link to={`/toy/${toy._id}`}>Details</Link></button>
-                    </div>
-                </li>)}
-        </ul>
+        <section className="toyList container">
+            <ul className="toy-list flex justify-center">
+                {elLis}
+            </ul>
+        </section>
     )
 }

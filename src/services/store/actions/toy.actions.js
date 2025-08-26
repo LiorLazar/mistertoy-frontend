@@ -1,5 +1,5 @@
 import { toyService } from "../../toy.service"
-import { ADD_TOY, REMOVE_TOY, SET_FILTER_BY, SET_IS_LOADING, SET_SORT_BY, SET_TOY_LABELS, SET_TOYS } from "../reducers/toy.reducer"
+import { ADD_TOY, REMOVE_TOY, UPDATE_TOY, SET_FILTER_BY, SET_IS_LOADING, SET_SORT_BY, SET_TOY_LABELS, SET_TOYS } from "../reducers/toy.reducer"
 import { store } from "../store"
 
 export function loadToys() {

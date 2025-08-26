@@ -1,15 +1,16 @@
-import { useEffect, useRef, useState } from "react"
+import { useRef, useState } from "react"
 import Select from 'react-select'
 
-import { utilService } from "../services/util.service.js"
-import { toyService } from "../services/toy.service.js"
+import { utilService } from "../services/util.service"
+import { toyService } from "../services/toy.service"
+import { useEffectUpdate } from "../hooks/useEffectUpdate"
 
 export function ToyFilter({ filterBy, onSetFilter, toyLabels }) {
     const [filterByToEdit, setFilterByToEdit] = useState({ ...filterBy })
 
     const debouncedOnSetFilter = useRef(utilService.debounce(onSetFilter, 300)).current
 
-    useEffect(() => {
+    useEffectUpdate(() => {
         debouncedOnSetFilter(filterByToEdit)
     }, [filterByToEdit])
 

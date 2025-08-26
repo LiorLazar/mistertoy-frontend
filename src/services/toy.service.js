@@ -70,7 +70,7 @@ function getById(toyId) {
 }
 
 function save(toy) {
-    const method = bug._id ? 'put' : 'post'
+    const method = toy._id ? 'put' : 'post'
     if (method === 'post') {
         toy.createdAt = Date.now()
         toy.inStock = true
@@ -86,7 +86,7 @@ function getEmptyToy() {
     return {
         name: '',
         price: '',
-        labels: _getRandomLabels(),
+        labels: [],
         inStock: true
     }
 }

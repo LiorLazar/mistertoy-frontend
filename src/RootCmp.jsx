@@ -10,6 +10,7 @@ import { ToyIndex } from './pages/ToyIndex'
 import { ToyDetails } from './pages/ToyDetails'
 import { useEffect } from 'react'
 import { loadToyLabels } from './services/store/actions/toy.actions'
+import { ToyEdit } from './pages/ToyEdit'
 
 
 export default function App() {
@@ -27,6 +28,7 @@ export default function App() {
             <Routes>
               <Route element={<ToyIndex />} path="/toy" />
               <Route element={<ToyDetails />} path="/toy/:toyId" />
+              <Route element={<ToyEdit />} path="/toy/edit/:toyId?" />
             </Routes>
           </main>
           <AppFooter />
