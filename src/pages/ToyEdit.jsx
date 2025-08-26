@@ -4,6 +4,7 @@ import { showErrorMsg, showSuccessMsg } from '../services/event-bus.service'
 import { toyService } from '../services/toy.service'
 import { useSelector } from 'react-redux'
 import { saveToy } from '../services/store/actions/toy.actions'
+import { useOnlineStatus } from '../hooks/useOnlineStatus'
 
 export function ToyEdit() {
     const navigate = useNavigate()
@@ -129,6 +130,9 @@ export function ToyEdit() {
                     {toyToEdit._id ? 'Update Toy' : 'Add'}
                 </button>
             </form>
+            <section>
+                <h1>{isOnline ? '✅ Online' : '❌ Disconnected'}</h1>
+            </section>
         </section>
     )
 }
