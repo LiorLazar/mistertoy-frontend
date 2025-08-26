@@ -5,6 +5,7 @@ import { toyService } from '../services/toy.service'
 import { useSelector } from 'react-redux'
 import { saveToy } from '../services/store/actions/toy.actions'
 import { useOnlineStatus } from '../hooks/useOnlineStatus'
+import { useConfirmTabClose } from '../hooks/useConfirmTabClose'
 
 export function ToyEdit() {
     const navigate = useNavigate()
@@ -13,6 +14,7 @@ export function ToyEdit() {
     const { toyId } = useParams()
 
     const isOnline = useOnlineStatus()
+    const setHasUnsavedChanges = useConfirmTabClose()
 
     useEffect(() => {
         loadToy()
@@ -44,6 +46,7 @@ export function ToyEdit() {
             ...prevToy,
             [name]: fieldValue
         }))
+        setHasUnsavedChanges(true)
     }
 
     function onSaveToy(ev) {
