@@ -48,7 +48,7 @@ export function toyReducer(state = initialState, action = {}) {
             return { ...state, toys, lastTyos: state.toys }
 
         case SET_TOY_LABELS:
-            return { ...state, toysLabels: action.labels }
+            return { ...state, toyLabels: action.labels }
 
         case TOY_UNDO:
             return { ...state, toys: [...state.lastToys] }

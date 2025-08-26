@@ -6,13 +6,14 @@ import { ToyFilter } from "../cmps/ToyFilter"
 import { ToyList } from "../cmps/ToyList"
 import { Link } from "react-router-dom"
 import { ToySort } from "../cmps/ToySort"
+import { Loader } from "../cmps/Loader"
 
 export function ToyIndex() {
     const toys = useSelector(storeState => storeState.toyModule.toys)
     const filterBy = useSelector(storeState => storeState.toyModule.filterBy)
     const sortBy = useSelector(storeState => storeState.toyModule.sortBy)
     const isLoading = useSelector(storeState => storeState.toyModule.flag.isLoading)
-    const toyLabels = useSelector(storeState => storeState.toyModule.toylabels)
+    const toyLabels = useSelector(storeState => storeState.toyModule.toyLabels)
 
     useEffect(() => {
         loadToys()
@@ -45,7 +46,7 @@ export function ToyIndex() {
                 <ToyFilter
                     filterBy={filterBy}
                     onSetFilter={onSetFilter}
-                    toylabels={toyLabels}
+                    toyLabels={toyLabels}
                 />
                 <ToySort sortBy={sortBy} onSetSort={onSetSort} />
             </section>
@@ -56,7 +57,7 @@ export function ToyIndex() {
                 </button>
             </div>
 
-            {/* {isLoading && <Loader />} */}
+            {isLoading && <Loader />}
             {!isLoading && <ToyList toys={toys} onRemoveToy={onRemoveToy} />}
             {/* <PopUp isOpen={filterBy.txt === 'xxx'}>
                     <>

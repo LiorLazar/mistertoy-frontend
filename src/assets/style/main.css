@@ -10,6 +10,7 @@
 /* Components */
 @import 'cmps/AppHeader.css';
 @import 'cmps/AppFooter.css';
+@import 'cmps/Loader.css';
 
 @import 'cmps/ToyFilter.css';
 @import 'cmps/ToyList.css';

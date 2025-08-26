@@ -25,6 +25,11 @@ export function ToyFilter({ filterBy, onSetFilter, toyLabels }) {
         setFilterByToEdit(prevFilter => ({ ...prevFilter, [field]: value }))
     }
 
+    function handleLabelsChange(selectedOptions) {
+        const value = selectedOptions ? selectedOptions.map(opt => opt.value) : []
+        setFilterByToEdit(prevFilter => ({ ...prevFilter, labels: value }))
+    }
+
     const { txt, inStock, labels } = filterByToEdit
     return (
         <section className="toy-filter full main-layout">
@@ -43,16 +48,16 @@ export function ToyFilter({ filterBy, onSetFilter, toyLabels }) {
                     <option value="false">Out Of Stock</option>
                 </select>
                 <label htmlFor="labels"> Labels:</label>
-                {toyLabels &&
+                {toyLabels && toyLabels.length > 0 &&
                     <Select
-                        defaultValue=''
                         isMulti
                         name="labels"
-                        options={labels}
+                        options={toyLabels.map(label => ({ value: label, label }))}
                         className="basic-multi-select toy-label-select"
                         classNamePrefix="select"
-                        onChange={handleChange}
-                    ></Select>
+                        value={labels.map(label => ({ value: label, label }))}
+                        onChange={handleLabelsChange}
+                    />
                 }
             </form>
         </section >
