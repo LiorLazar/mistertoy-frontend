@@ -46,7 +46,7 @@ function query(filterBy = {}, sortBy = {}) {
             }
 
             //* Filter By Labels
-            if (ffilterBy.labels?.length) {
+            if (filterBy.labels?.length) {
                 toysToShow = toysToShow.filter(toy =>
                     filterBy.labels.every(label => toy.labels.includes(label))
                 )
@@ -56,7 +56,7 @@ function query(filterBy = {}, sortBy = {}) {
             if (sortBy.type) {
                 const dir = sortBy.desc
                 toysToShow.sort((a, b) => {
-                    if (sortBy.type === 'name') return a.name.localCompare(b.name) * dir
+                    if (sortBy.type === 'name') return a.name.localeCompare(b.name) * dir
                     else if (sortBy.type === 'price' || sortBy.type === 'createdAt') return (a[sortBy.type] - b[sortBy.type]) * dir
                 })
             }
@@ -125,7 +125,7 @@ function getInStockValue(inStock) {
 }
 
 function _createToys() {
-    let toys = utilService.loadFromStorage(TOY_DB)
+    let toys = utilService.loadFromStorage(TOY_KEY)
     if (!toys || !toys.length) {
         toys = [
             {
