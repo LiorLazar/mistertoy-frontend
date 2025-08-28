@@ -11,6 +11,7 @@ import { ToyDetails } from './pages/ToyDetails'
 import { useEffect } from 'react'
 import { loadToyLabels } from './services/store/actions/toy.actions'
 import { ToyEdit } from './pages/ToyEdit'
+import { Dashboard } from './cmps/Dashboard'
 
 
 export default function App() {
@@ -21,14 +22,15 @@ export default function App() {
 
   return (
     <Provider store={store}>
-      <Router>
+      <Router basename='/mistertoy-frontend'>
         <section className="app">
           <AppHeader />
           <main className="main-layout">
             <Routes>
-              <Route element={<ToyIndex />} path="/toy" />
-              <Route element={<ToyDetails />} path="/toy/:toyId" />
-              <Route element={<ToyEdit />} path="/toy/edit/:toyId?" />
+              <Route path='/' element={<Dashboard />} />
+              <Route path="/toy" element={<ToyIndex />} />
+              <Route path="/toy/:toyId" element={<ToyDetails />} />
+              <Route path="/toy/edit/:toyId" element={<ToyEdit />} />
             </Routes>
           </main>
           <AppFooter />
