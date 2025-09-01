@@ -30,6 +30,7 @@ export default function App() {
               <Route path='/' element={<Dashboard />} />
               <Route path="/toy" element={<ToyIndex />} />
               <Route path="/toy/:toyId" element={<ToyDetails />} />
+              <Route path='/toy/edit' element={<ToyEdit />} />
               <Route path="/toy/edit/:toyId" element={<ToyEdit />} />
             </Routes>
           </main>
