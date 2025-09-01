@@ -1,0 +1,9 @@
+.google-map {
+    width: 90vw;
+    height: 70vh;
+    margin-inline: auto;
+}
+
+.red-class {
+    border: 3px solid red;
+}
