@@ -12,6 +12,7 @@ import { useEffect } from 'react'
 import { loadToyLabels } from './services/store/actions/toy.actions'
 import { ToyEdit } from './pages/ToyEdit'
 import { Dashboard } from './cmps/Dashboard'
+import { About } from './pages/About'
 
 
 export default function App() {
@@ -28,6 +29,7 @@ export default function App() {
           <main className="main-layout">
             <Routes>
               <Route path='/' element={<Dashboard />} />
+              <Route path='/about' element={<About />} />
               <Route path="/toy" element={<ToyIndex />} />
               <Route path="/toy/:toyId" element={<ToyDetails />} />
               <Route path='/toy/edit' element={<ToyEdit />} />
