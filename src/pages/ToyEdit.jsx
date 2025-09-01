@@ -66,9 +66,8 @@ export function ToyEdit() {
         setHasUnsavedChanges(true)
     }
 
-    function onSaveToy(ev) {
-        ev.preventDefault()
-        saveToy(toyToEdit)
+    function onSaveToy(values, { setSubmitting }) {
+        saveToy(values)
             .then((savedToy) => {
                 showSuccessMsg(`Toy ${savedToy._id} saved successfully`)
                 navigate('/toy')
@@ -77,11 +76,7 @@ export function ToyEdit() {
                 console.log('err:', err)
                 showErrorMsg('Cannot save toy')
             })
-    }
-
-    const priceValidations = {
-        min: "1",
-        required: true
+            .finally(() => setSubmitting(false))
     }
 
     function CustomInput(props) {
@@ -98,6 +93,7 @@ export function ToyEdit() {
     }
 
     // console.log('toyToEdit.labels:', toyToEdit.labels)
+
     return (
         <section className="toy-edit">
             <h2>{toyToEdit._id ? 'Edit' : 'Add'} Toy</h2>
@@ -105,20 +101,21 @@ export function ToyEdit() {
                 initialValues={{
                     name: toyToEdit.name,
                     price: toyToEdit.price,
-                    labels: toyToEdit.labels
+                    labels: toyToEdit.labels || []
                 }}
                 validationSchema={EditToySchema}
                 enableReinitialize={true}
+                onSubmit={onSaveToy}
             >
-                {({ errors, touched, isValid, dirty, status }) => {
+                {({ errors, touched, isValid, dirty, status, values, handleChange, setFieldValue }) => {
                     const validationClass = formValidationClass(errors, touched)
                     return (
-                        <Form className={`formik ${validationClass}`}>
-                            <Field as={CustomInput} label='name' name='name' onChange={handleChange} />
+                        <Form className={`form ${validationClass}`}>
+                            <Field as={CustomInput} label='name' name='name' />
                             {errors.name && touched.name && (
                                 <div className='errors'>{errors.name}</div>
                             )}
-                            <Field as={CustomInput} label='price' name='price' type='number' onChange={handleChange} />
+                            <Field as={CustomInput} label='price' name='price' type='number' />
                             {errors.price && touched.price && (
                                 <div className='errors'>{errors.price}</div>
                             )}
@@ -126,8 +123,11 @@ export function ToyEdit() {
                                 as="select"
                                 name="labels"
                                 multiple
-                                value={toyToEdit.labels}
-                                onChange={handleChange}
+                                value={values.labels}
+                                onChange={e => {
+                                    const selected = Array.from(e.target.selectedOptions, option => option.value)
+                                    setFieldValue('labels', selected)
+                                }}
                             >
                                 {labels.map(label => (
                                     <option key={label} value={label}>
@@ -138,11 +138,11 @@ export function ToyEdit() {
                             {errors.labels && touched.labels && (
                                 <div className='errors'>{errors.labels}</div>
                             )}
+                            <button type="submit">Save</button>
                         </Form>
                     )
                 }}
             </Formik>
-
             <section>
                 <h1>{isOnline ? '✅ Online' : '❌ Disconnected'}</h1>
             </section>
