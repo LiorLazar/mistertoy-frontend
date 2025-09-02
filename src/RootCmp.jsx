@@ -23,7 +23,7 @@ export default function App() {
 
   return (
     <Provider store={store}>
-      <Router basename='/mistertoy-frontend'>
+      <Router>
         <section className="app">
           <AppHeader />
           <main className="main-layout">
