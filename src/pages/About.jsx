@@ -1,7 +1,14 @@
 import { AdvancedMarker, APIProvider, InfoWindow, Map, Pin, useAdvancedMarkerRef } from '@vis.gl/react-google-maps';
 import { useState } from 'react';
+import { AccordionCmp } from '../cmps/Accordion';
 
 const API_KEY = 'AIzaSyBSKU4OO6xlyDxqn2rPgWc8gIiTYKmZtv0'
+
+// Branch coordinates
+const BRANCH_LOCATIONS = {
+    'Tel Aviv': { lat: 32.0853, lng: 34.7818 },
+    'Jerusalem': { lat: 31.7683, lng: 35.2137 }
+}
 
 export function About() {
     const [coords, setCoords] = useState({ lat: 32.0853, lng: 34.7818 })
@@ -13,12 +20,20 @@ export function About() {
         ev.map.panTo(latLng)
         setCoords(latLng)
     }
+
+    function handleBranchSelect(branchName) {
+        const branchCoords = BRANCH_LOCATIONS[branchName]
+        if (branchCoords) {
+            setCoords(branchCoords)
+            setIsInfoOpen(false) // Close info window when switching branches
+        }
+    }
     return (
         <section className="google-map">
             <h1>Google Maps!</h1>
             <APIProvider apiKey={API_KEY}>
                 <Map
-                    defaultCenter={coords}
+                    center={coords}
                     defaultZoom={10}
                     mapId="DEMO_MAP_ID"
                     onClick={handleMapClick}
@@ -44,7 +59,7 @@ export function About() {
                     }
                 </Map>
             </APIProvider>
-            <Accordion />
+            <AccordionCmp onBranchSelect={handleBranchSelect} />
         </section>
     )
 }
