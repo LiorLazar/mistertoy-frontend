@@ -5,6 +5,7 @@ import { showErrorMsg } from "../services/event-bus.service"
 import { Loader } from "../cmps/Loader"
 import { PopUp } from "../cmps/PopUp"
 import { Chat } from "../cmps/Chat"
+import { Messages } from "../cmps/Messages"
 
 export function ToyDetails() {
     const [toy, setToy] = useState(null)
@@ -29,25 +30,30 @@ export function ToyDetails() {
     if (!toy) return <Loader />
     const formattedDate = new Date(toy.createdAt).toLocaleString('he')
     return (
-        <section className="toy-details" style={{ textAlign: 'center' }}>
-            <h1>
-                Toy name: <span>{toy.name}</span>
-            </h1>
-            <h1>
-                Toy price: <span>${toy.price}</span>
-            </h1>
-            <h1>
-                Labels: <span>{toy.labels.join(' ,')}</span>
-            </h1>
-            <h1>
-                Created At: <span>{formattedDate}</span>
-            </h1>
-            <h1 className={toy.inStock ? 'green' : 'red'}>
-                {toy.inStock ? 'In stock' : 'Not in stock'}
-            </h1>
-            <button className='back-btn'>
-                <Link to="/toy">Back</Link>
-            </button>
+        <>
+            <section className="toy-details" style={{ textAlign: 'center' }}>
+                <h1>
+                    Toy name: <span>{toy.name}</span>
+                </h1>
+                <h1>
+                    Toy price: <span>${toy.price}</span>
+                </h1>
+                <h1>
+                    Labels: <span>{toy.labels.join(' ,')}</span>
+                </h1>
+                <h1>
+                    Created At: <span>{formattedDate}</span>
+                </h1>
+                <h1 className={toy.inStock ? 'green' : 'red'}>
+                    {toy.inStock ? 'In stock' : 'Not in stock'}
+                </h1>
+                <button className='back-btn'>
+                    <Link to="/toy">Back</Link>
+                </button>
+            </section>
+
+            <Messages toyId={toyId} />
+
             <section>
                 <PopUp
                     header={<h3>Chat About {toy.name}s</h3>}
@@ -59,6 +65,6 @@ export function ToyDetails() {
                 </PopUp>
             </section >
             {!isChatOpen && <button onClick={() => setIsChatOpen(true)} className='open-chat'>Chat</button>}
-        </section >
+        </>
     )
 }

@@ -1,0 +1,160 @@
+.messages {
+    max-width: 800px;
+    width: 90%;
+    margin: 2rem auto;
+    padding: 2rem;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    background-color: #f7f7f7;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    font-family: system-ui, sans-serif;
+}
+
+.messages h3 {
+    margin-bottom: 1.5rem;
+    color: #333;
+    text-align: center;
+    font-size: 1.5em;
+    font-weight: 600;
+}
+
+.messages-list {
+    margin-bottom: 1.5rem;
+    max-height: 300px;
+    overflow-y: auto;
+    padding: 0.5rem 0;
+}
+
+.message-item {
+    background: white;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e0e0e0;
+    transition: box-shadow 0.2s ease;
+}
+
+.message-item:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.message-item:last-child {
+    margin-bottom: 0;
+}
+
+.message-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+    font-size: 0.9rem;
+    border-bottom: 1px solid #f0f0f0;
+    padding-bottom: 0.5rem;
+}
+
+.message-user {
+    font-weight: bold;
+    color: #007bff;
+    font-size: 1rem;
+}
+
+.message-date {
+    color: #666;
+    font-size: 0.85rem;
+}
+
+.message-text {
+    margin: 0;
+    line-height: 1.6;
+    color: #333;
+    padding-top: 0.25rem;
+    font-size: 1rem;
+}
+
+.message-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    border-top: 1px solid #e0e0e0;
+    padding-top: 1rem;
+}
+
+.message-input {
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-family: inherit;
+    resize: none;
+    min-height: 80px;
+    max-height: 200px;
+    font-size: 0.9rem;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    overflow-y: auto;
+    line-height: 1.4;
+}
+
+.message-input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+.message-submit {
+    align-self: center;
+    padding: 0.75rem 2rem;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 123, 255, 0.2);
+}
+
+.message-submit:hover {
+    background-color: #0056b3;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+}
+
+.message-submit:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 123, 255, 0.2);
+}
+
+.message-submit:disabled {
+    background-color: #6c757d;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Empty state styling */
+.messages-list p {
+    text-align: center;
+    color: #666;
+    font-style: italic;
+    margin: 2rem 0;
+}
+
+/* Scrollbar styling */
+.messages-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.messages-list::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.messages-list::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+}
+
+.messages-list::-webkit-scrollbar-thumb:hover {
+    background: #a1a1a1;
+}
