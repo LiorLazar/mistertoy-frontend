@@ -44,6 +44,7 @@ export function About() {
                     }
                 </Map>
             </APIProvider>
+            <Accordion />
         </section>
     )
 }
