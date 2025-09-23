@@ -1,56 +1,65 @@
-import { toyService } from "../../toy.service"
-import { ADD_TOY, REMOVE_TOY, UPDATE_TOY, SET_FILTER_BY, SET_IS_LOADING, SET_SORT_BY, SET_TOY_LABELS, SET_TOYS } from "../reducers/toy.reducer"
-import { store } from "../store"
+import { toyService } from '../../toy.service.js'
+import {
+    ADD_TOY,
+    REMOVE_TOY,
+    SET_FILTER_BY,
+    SET_IS_LOADING,
+    SET_SORT_BY,
+    SET_TOY_LABELS,
+    SET_TOYS,
+    TOY_UNDO,
+    UPDATE_TOY,
+} from '../reducers/toy.reducer.js'
+import { store } from '../store.js'
 
-export function loadToys() {
-    const { filterBy, sortBy } = store.getState().toyModule
+export async function loadToys() {
+    const { filterBy } = store.getState().toyModule
 
-    store.dispatch({ type: SET_IS_LOADING, isLoading: true })
-
-    return toyService.query(filterBy, sortBy)
-        .then(toysData => {
-            store.dispatch({ type: SET_TOYS, toysData })
-        })
-        .catch(err => {
-            console.log('toy action -> Cannot load toys', err)
-            throw err
-        })
-        .finally(() => {
-            setTimeout(() => {
-                store.dispatch({ type: SET_IS_LOADING, isLoading: false })
-            }, 350)
-        })
+    try {
+        store.dispatch({ type: SET_IS_LOADING, isLoading: true })
+        const toysData = await toyService.query(filterBy)
+        store.dispatch({ type: SET_TOYS, toysData })
+    } catch (error) {
+        console.log('toy action -> Cannot load toys')
+        throw error
+    } finally {
+        setTimeout(() => {
+            store.dispatch({ type: SET_IS_LOADING, isLoading: false })
+        }, 350)
+    }
 }
 
-export function removeToy(toyId) {
-    return toyService.remove(toyId)
-        .then(() => store.dispatch({ type: REMOVE_TOY, toyId }))
-        .catch(err => {
-            console.log('toy action -> Cannot remove toy', err)
-            throw err
-        })
+export async function removeToy(toyId) {
+    try {
+        await toyService.remove(toyId)
+        store.dispatch({ type: REMOVE_TOY, toyId })
+    } catch (error) {
+        console.log('toy action -> Cannot remove toy', error)
+        throw error
+    }
 }
 
-export function saveToy(toy) {
-    const type = toy._id ? UPDATE_TOY : ADD_TOY
-    return toyService.save(toy)
-        .then(toyToSave => {
-            store.dispatch({ type, toy: toyToSave })
-            return toyToSave
-        })
-        .catch(err => {
-            console.log('toy action -> Cannot save toy', err)
-            throw err
-        })
+export async function removeToyOptimistic(toyId) {
+    try {
+        store.dispatch({ type: REMOVE_TOY, toyId })
+        await toyService.remove(toyId)
+    } catch (error) {
+        store.dispatch({ type: TOY_UNDO })
+        console.log('toy action -> Cannot remove toy', error)
+        throw error
+    }
 }
 
-export function loadToyLabels() {
-    return toyService.getToyLabels()
-        .then(labels => store.dispatch({ type: SET_TOY_LABELS, labels }))
-        .catch(err => {
-            console.log('toy action -> Cannot get labels')
-            throw err
-        })
+export async function saveToy(toy) {
+    try {
+        const type = toy._id ? UPDATE_TOY : ADD_TOY
+        const toyToSave = await toyService.save(toy)
+        store.dispatch({ type, toy: toyToSave })
+        return toyToSave
+    } catch (error) {
+        console.log('toy action -> Cannot save toy', error)
+        throw error
+    }
 }
 
 export function setFilter(filterBy = toyService.getDefaultFilter()) {
@@ -59,4 +68,15 @@ export function setFilter(filterBy = toyService.getDefaultFilter()) {
 
 export function setSort(sortBy = toyService.getDefaultSort()) {
     store.dispatch({ type: SET_SORT_BY, sortBy: sortBy })
+}
+
+export async function loadToyLabels() {
+    try {
+        const labels = await toyService.getToyLabels()
+        store.dispatch({ type: SET_TOY_LABELS, labels })
+        return labels
+    } catch (error) {
+        console.log('toy action -> Cannot load toy labels', error)
+        throw error
+    }
 }

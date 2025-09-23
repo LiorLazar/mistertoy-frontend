@@ -17,6 +17,7 @@ export function ToyIndex() {
     const maxPage = useSelector(storeState => storeState.toyModule.maxPage)
     const isLoading = useSelector(storeState => storeState.toyModule.flag.isLoading)
     const toyLabels = useSelector(storeState => storeState.toyModule.toyLabels)
+    const user = useSelector(storeState => storeState.userModule.loggedInUser)
 
     useEffect(() => {
         loadToys()
@@ -58,14 +59,16 @@ export function ToyIndex() {
                 <ToySort sortBy={sortBy} onSetSort={onSetSort} />
             </section>
 
-            <div style={{ marginBlockStart: '0.5em', textAlign: 'center' }}>
-                <button style={{ marginInline: 0 }}>
-                    <Link to="/toy/edit">Add Toy</Link>
-                </button>
-            </div>
+            {user && user.isAdmin && (
+                <div style={{ marginBlockStart: '0.5em', textAlign: 'center' }}>
+                    <button style={{ marginInline: 0 }}>
+                        <Link to="/toy/edit">Add Toy</Link>
+                    </button>
+                </div>
+            )}
 
             {isLoading && <Loader />}
-            {!isLoading && <ToyList toys={toys} onRemoveToy={onRemoveToy} />}
+            {!isLoading && <ToyList toys={toys} onRemoveToy={onRemoveToy} user={user} />}
             {!isLoading && (
                 <Pagination
                     currentPage={filterBy.pageIdx}
