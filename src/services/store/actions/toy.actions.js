@@ -8,8 +8,8 @@ export function loadToys() {
     store.dispatch({ type: SET_IS_LOADING, isLoading: true })
 
     return toyService.query(filterBy, sortBy)
-        .then(toys => {
-            store.dispatch({ type: SET_TOYS, toys })
+        .then(toysData => {
+            store.dispatch({ type: SET_TOYS, toysData })
         })
         .catch(err => {
             console.log('toy action -> Cannot load toys', err)

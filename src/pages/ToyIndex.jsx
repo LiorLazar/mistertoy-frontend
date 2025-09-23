@@ -4,6 +4,7 @@ import { loadToys, removeToy, setFilter, setSort } from "../services/store/actio
 import { showErrorMsg, showSuccessMsg } from "../services/event-bus.service"
 import { ToyFilter } from "../cmps/ToyFilter"
 import { ToyList } from "../cmps/ToyList"
+import { Pagination } from "../cmps/Pagination"
 import { Link } from "react-router-dom"
 import { ToySort } from "../cmps/ToySort"
 import { Loader } from "../cmps/Loader"
@@ -13,6 +14,7 @@ export function ToyIndex() {
     const toys = useSelector(storeState => storeState.toyModule.toys)
     const filterBy = useSelector(storeState => storeState.toyModule.filterBy)
     const sortBy = useSelector(storeState => storeState.toyModule.sortBy)
+    const maxPage = useSelector(storeState => storeState.toyModule.maxPage)
     const isLoading = useSelector(storeState => storeState.toyModule.flag.isLoading)
     const toyLabels = useSelector(storeState => storeState.toyModule.toyLabels)
 
@@ -41,6 +43,10 @@ export function ToyIndex() {
         setSort(sortBy)
     }
 
+    function onPageChange(pageIdx) {
+        setFilter({ ...filterBy, pageIdx })
+    }
+
     return (
         <section className="toy-index">
             <section className="toy-filter-sort container">
@@ -60,6 +66,13 @@ export function ToyIndex() {
 
             {isLoading && <Loader />}
             {!isLoading && <ToyList toys={toys} onRemoveToy={onRemoveToy} />}
+            {!isLoading && (
+                <Pagination
+                    currentPage={filterBy.pageIdx}
+                    maxPage={maxPage}
+                    onPageChange={onPageChange}
+                />
+            )}
             <PopUp isOpen={filterBy.txt === 'xxx'}>
                 <>
                     <h1>Hello!</h1>

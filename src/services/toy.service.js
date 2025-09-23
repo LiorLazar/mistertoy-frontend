@@ -26,8 +26,15 @@ export const toyService = {
     getInStockValue
 }
 
-function query(filterBy = {}, sortBy = {}) {
-    return httpService.get(BASE_URL, filterBy, sortBy)
+function query(filterBy = {}) {
+    return httpService.get(BASE_URL, filterBy)
+        .then(response => {
+            // Return both toys and pagination info
+            return {
+                toys: response.toys || [],
+                maxPage: response.maxPage || 0
+            }
+        })
 }
 
 function getById(toyId) {

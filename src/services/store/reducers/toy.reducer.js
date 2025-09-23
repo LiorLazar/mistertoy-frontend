@@ -20,6 +20,7 @@ const initialState = {
     sortBy: toyService.getDefaultSort(),
     toyLabels: [],
     lastToys: [],
+    maxPage: 0,
     flag: {
         isLoading: false,
         error: null
@@ -31,7 +32,12 @@ export function toyReducer(state = initialState, action = {}) {
     switch (action.type) {
         // Toys
         case SET_TOYS:
-            return { ...state, toys: action.toys, lastToys: state.toys }
+            return {
+                ...state,
+                toys: action.toysData.toys,
+                maxPage: action.toysData.maxPage,
+                lastToys: state.toys
+            }
 
         case REMOVE_TOY:
             toys = state.toys.filter(toy => toy._id !== action.toyId)
