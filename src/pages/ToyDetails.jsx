@@ -6,6 +6,7 @@ import { Loader } from "../cmps/Loader"
 import { PopUp } from "../cmps/PopUp"
 import { Chat } from "../cmps/Chat"
 import { Messages } from "../cmps/Messages"
+import { Reviews } from "../cmps/Reviews"
 
 export function ToyDetails() {
     const [toy, setToy] = useState(null)
@@ -53,6 +54,7 @@ export function ToyDetails() {
             </section>
 
             <Messages toyId={toyId} />
+            <Reviews toyId={toyId} />
 
             <section>
                 <PopUp
