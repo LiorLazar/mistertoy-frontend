@@ -1,151 +1,179 @@
+import {
+  Button,
+  Checkbox,
+  FormControl,
+  InputLabel,
+  ListItemText,
+  MenuItem,
+  Select,
+  TextField,
+} from '@mui/material'
+import { Field, Form, Formik } from 'formik'
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { useSelector } from 'react-redux'
-import { Field, Form, Formik } from 'formik'
 import * as Yup from 'yup'
-
 import { showErrorMsg, showSuccessMsg } from '../services/event-bus.service'
 import { toyService } from '../services/toy.service'
-import { saveToy } from '../services/store/actions/toy.actions'
-import { useOnlineStatus } from '../hooks/useOnlineStatus'
-import { useConfirmTabClose } from '../hooks/useConfirmTabClose'
-import { TextField } from '@mui/material'
-
-const EditToySchema = Yup.object().shape({
-    name: Yup.string()
-        .min(2, 'Too Short')
-        .max(50, 'Too Long')
-        .required('Required'),
-    price: Yup.number()
-        .required('Required'),
-    labels: Yup.array()
-        .min(1, 'Select at least one label')
-        .of(Yup.string().required())
-        .required('Required')
-})
+import { saveToy } from '../store/actions/toy.actions'
 
 export function ToyEdit() {
-    const navigate = useNavigate()
-    const [toyToEdit, setToyToEdit] = useState(toyService.getEmptyToy())
-    const labels = useSelector(storeState => storeState.toyModule.toyLabels)
-    const { toyId } = useParams()
+  const [toyToEdit, setToyToEdit] = useState(toyService.getEmptyToy())
 
-    const isOnline = useOnlineStatus()
-    const setHasUnsavedChanges = useConfirmTabClose()
+  const { toyId } = useParams()
+  const navigate = useNavigate()
 
-    useEffect(() => {
-        loadToy()
-    }, [])
+  const labels = toyService.getToyLabels()
 
-    function loadToy() {
-        if (!toyId) return
-        toyService.getById(toyId)
-            .then(setToyToEdit)
-            .catch(err => {
-                console.log('Had issues in toy edit:', err)
-                navigate('/toy')
-                showErrorMsg('Toy not found!')
-            })
+  useEffect(() => {
+    if (!toyId) return
+    loadToy()
+  }, [])
+
+  async function loadToy() {
+    try {
+      const toy = await toyService.getById(toyId)
+      setToyToEdit(toy)
+    } catch (error) {
+      console.log('Had issued in toy edit:', error)
+      navigate('/toy')
+      showErrorMsg('Toy not found!')
     }
+  }
 
-    function handleChange({ target }) {
-        const { name, value, type, checked } = target
-        let fieldValue = value
-        if (type === 'checkbox') {
-            fieldValue = checked
-        } else if (type === 'number') {
-            fieldValue = +value
-        } else if (type === 'select-multiple') {
-            fieldValue = [...target.selectedOptions].map(option => option.value)
-        }
+  const ToySchema = Yup.object().shape({
+    name: Yup.string()
+      .required('Name is required')
+      .min(2, 'Too Short!')
+      .max(20, 'Too Long!'),
+    price: Yup.number()
+      .required('Price is required')
+      .min(1, 'Price must be at least 1'),
+    labels: Yup.array().of(Yup.string()),
+  })
 
-        setToyToEdit(prevToy => ({
-            ...prevToy,
-            [name]: fieldValue
-        }))
-        setHasUnsavedChanges(true)
+  const muiTheme = {
+    text: {
+      '& .MuiOutlinedInput-root': {
+        '&.Mui-focused fieldset': {
+          borderColor: '#52b69a', // Change border color when focused
+        },
+      },
+      '& .MuiInputLabel-root.Mui-focused': {
+        color: '#ffd56b', // Change label color when focused
+      },
+    },
+    select: {
+      '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+        borderColor: '#52b69a', // Border color when focused
+      },
+    },
+    button: {
+      color: 'black',
+      backgroundColor: '#ffd56b',
+      '&:hover': {
+        backgroundColor: '#52b69a', // Background color on hover
+      },
+    },
+    checkbox: {
+      color: '#52b69a', // Default color
+      '&.Mui-checked': {
+        color: '#52b69a', // Color when checked
+      },
+    },
+  }
+
+  async function onSaveToy(values, { setSubmitting }) {
+    try {
+      await saveToy(values)
+      showSuccessMsg('Toy saved successfully')
+      navigate('/toy')
+    } catch (error) {
+      showErrorMsg('Cannot save toy')
+    } finally {
+      setSubmitting(false)
     }
+  }
 
-    function onSaveToy(values, { setSubmitting }) {
-        saveToy(values)
-            .then((savedToy) => {
-                showSuccessMsg(`Toy ${savedToy._id} saved successfully`)
-                navigate('/toy')
-            })
-            .catch(err => {
-                console.log('err:', err)
-                showErrorMsg('Cannot save toy')
-            })
-            .finally(() => setSubmitting(false))
-    }
+  return (
+    <section className="toy-edit">
+      <h2>{toyToEdit._id ? 'Edit' : 'Add'} Toy</h2>
 
-    function CustomInput(props) {
-        return (
-            <TextField {...props} variant="standard" />
-        )
-    }
+      <Formik
+        enableReinitialize
+        initialValues={toyToEdit}
+        validationSchema={ToySchema}
+        onSubmit={onSaveToy}
+      >
+        {({ errors, touched, values, handleChange, setFieldValue }) => (
+          <Form>
+            <Field
+              as={TextField}
+              label="Name"
+              variant="outlined"
+              name="name"
+              required
+              margin="normal"
+              error={touched.name && !!errors.name}
+              helperText={touched.name && errors.name}
+              onChange={handleChange}
+              value={values.name}
+              sx={muiTheme.text}
+            />
 
-    function formValidationClass(errors, touched) {
-        const isError = !!Object.keys(errors).length
-        const isTouched = !!Object.keys(touched).length
-        if (!isTouched) return ''
-        return isError ? 'error' : 'valid'
-    }
+            <Field
+              as={TextField}
+              label="Price"
+              variant="outlined"
+              type="number"
+              name="price"
+              required
+              margin="normal"
+              inputProps={{ min: 1 }}
+              error={touched.price && !!errors.price}
+              helperText={touched.price && errors.price}
+              onChange={handleChange}
+              value={values.price}
+              sx={muiTheme.text}
+            />
 
-    // console.log('toyToEdit.labels:', toyToEdit.labels)
-
-    return (
-        <section className="toy-edit">
-            <h2>{toyToEdit._id ? 'Edit' : 'Add'} Toy</h2>
-            <Formik
-                initialValues={{
-                    name: toyToEdit.name,
-                    price: toyToEdit.price,
-                    labels: toyToEdit.labels || []
+            <FormControl margin="normal">
+              <InputLabel id="labels-label">Labels</InputLabel>
+              <Select
+                multiple
+                labelId="labels-label"
+                id="labels"
+                name="labels"
+                value={values.labels}
+                onChange={event => {
+                  setFieldValue('labels', event.target.value)
                 }}
-                validationSchema={EditToySchema}
-                enableReinitialize={true}
-                onSubmit={onSaveToy}
+                renderValue={selected => selected.join(', ')}
+                style={{ minWidth: '20vw' }}
+                sx={muiTheme.select}
+              >
+                {labels.map(label => (
+                  <MenuItem key={label} value={label}>
+                    <Checkbox
+                      checked={values.labels.includes(label)}
+                      sx={muiTheme.checkbox}
+                    />
+                    <ListItemText primary={label} />
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+
+            <Button
+              variant="contained"
+              color="primary"
+              type="submit"
+              sx={muiTheme.button}
             >
-                {({ errors, touched, isValid, dirty, status, values, handleChange, setFieldValue }) => {
-                    const validationClass = formValidationClass(errors, touched)
-                    return (
-                        <Form className={`form ${validationClass}`}>
-                            <Field as={CustomInput} label='name' name='name' />
-                            {errors.name && touched.name && (
-                                <div className='errors'>{errors.name}</div>
-                            )}
-                            <Field as={CustomInput} label='price' name='price' type='number' />
-                            {errors.price && touched.price && (
-                                <div className='errors'>{errors.price}</div>
-                            )}
-                            <Field
-                                as="select"
-                                name="labels"
-                                multiple
-                                value={values.labels}
-                                onChange={e => {
-                                    const selected = Array.from(e.target.selectedOptions, option => option.value)
-                                    setFieldValue('labels', selected)
-                                }}
-                            >
-                                {labels.map(label => (
-                                    <option key={label} value={label}>
-                                        {label}
-                                    </option>
-                                ))}
-                            </Field>
-                            {errors.labels && touched.labels && (
-                                <div className='errors'>{errors.labels}</div>
-                            )}
-                            <button type="submit">Save</button>
-                        </Form>
-                    )
-                }}
-            </Formik>
-            <section>
-                <h1>{isOnline ? '✅ Online' : '❌ Disconnected'}</h1>
-            </section>
-        </section>
-    )
+              {toyToEdit._id ? 'Save' : 'Add'}
+            </Button>
+          </Form>
+        )}
+      </Formik>
+    </section>
+  )
 }

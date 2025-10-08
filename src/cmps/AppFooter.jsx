@@ -1,9 +1,7 @@
-
-
 export function AppFooter() {
-    return (
-        <footer className="app-footer">
-            <p>Coding Academy - 2025 - Lior Lazar</p>
-        </footer>
-    )
+  return (
+    <section className="app-footer full">
+      <p>Coffeerights to all</p>
+    </section>
+  )
 }

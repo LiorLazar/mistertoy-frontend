@@ -1,35 +1,28 @@
-import { Link } from "react-router-dom"
-import { ToyPreview } from "./ToyPreview"
+import { Link } from 'react-router-dom'
+import { ToyPreview } from './ToyPreview'
 
-export function ToyList({ toys, onRemoveToy, user }) {
-    // Safety check to ensure toys is an array
-    if (!toys || !Array.isArray(toys)) {
-        return <div>No toys available</div>
-    }
-
-    const elLis = toys.map(toy => (
-        <li key={toy._id}>
-            <ToyPreview toy={toy} />
-            <div className="flex justify-center">
-                {user && user.isAdmin && (
-                    <button>
-                        <Link to={`/toy/edit/${toy._id}`}>Edit</Link>
-                    </button>
-                )}
-                <button>
-                    <Link to={`/toy/${toy._id}`}>Details</Link>
-                </button>
-                {user && user.isAdmin && (
-                    <button onClick={() => onRemoveToy(toy._id)}>Remove</button>
-                )}
-            </div>
-        </li>
-    ))
-    return (
-        <section className="toyList container">
-            <ul className="toy-list flex justify-center">
-                {elLis}
-            </ul>
-        </section>
-    )
+export function ToyList({ toys, onRemoveToy, loggedInUser }) {
+  return (
+    <section className="toy-list">
+      {!toys.length ? (
+        <h1 style={{ alignSelf: 'center' }}>It's empty here...</h1>
+      ) : (
+        <ul>
+          {toys.map(toy => (
+            <li key={toy._id}>
+              <ToyPreview toy={toy} />
+              {loggedInUser && loggedInUser.isAdmin && (
+                <div className="flex justify-center">
+                  <button>
+                    <Link to={`/toy/edit/${toy._id}`}>Edit</Link>
+                  </button>
+                  <button onClick={() => onRemoveToy(toy._id)}>Remove</button>
+                </div>
+              )}
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
+  )
 }
