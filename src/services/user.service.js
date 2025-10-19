@@ -1,10 +1,9 @@
-import { httpService } from './http.service'
+import { httpService } from './http.service.js'
 
 export const userService = {
   login,
   signup,
   logout,
-  getUsers,
   getLoggedInUser,
   getEmptyCredentials,
 }
@@ -44,17 +43,14 @@ async function logout() {
   }
 }
 
-async function getUsers() {
-  try {
-    return await httpService.get(`user`)
-  } catch (error) {
-    console.log('Could get users')
-  }
-}
-
 function getLoggedInUser() {
-  const entity = sessionStorage.getItem(STORAGE_KEY)
-  return JSON.parse(entity)
+  try {
+    const entity = sessionStorage.getItem(STORAGE_KEY)
+    return entity ? JSON.parse(entity) : null
+  } catch (error) {
+    console.log('Error parsing logged in user from storage', error)
+    return null
+  }
 }
 
 function getEmptyCredentials() {
