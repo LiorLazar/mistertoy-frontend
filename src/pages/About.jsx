@@ -2,7 +2,7 @@ import { AdvancedMarker, APIProvider, InfoWindow, Map, Pin, useAdvancedMarkerRef
 import { useState } from 'react';
 import { AccordionCmp } from '../cmps/Accordion';
 
-const API_KEY = 'AIzaSyBSKU4OO6xlyDxqn2rPgWc8gIiTYKmZtv0'
+const API_KEY = 'AIzaSyB_MQYsX-7FXEM7yLEtDvplXENy5co7Vso'
 
 // Branch coordinates
 const BRANCH_LOCATIONS = {
