@@ -6,10 +6,10 @@ const initialState = {
     loggedInUser: userService.getLoggedInUser(),
 }
 
-console.log('🔍 USER REDUCER - Initial state:', initialState)
+// console.log('🔍 USER REDUCER - Initial state:', initialState)
 
 export function userReducer(state = initialState, action = {}) {
-    console.log('🔍 USER REDUCER - Action:', action.type, action)
+    // console.log('🔍 USER REDUCER - Action:', action.type, action)
     switch (action.type) {
         case SET_USER:
             return {
